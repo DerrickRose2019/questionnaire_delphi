@@ -13,6 +13,9 @@ import javax.annotation.Resource;
 import javax.sound.midi.Soundbank;
 import java.sql.SQLOutput;
 import java.util.*;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 @Controller
 
@@ -79,15 +82,15 @@ public class UserController {
     }
 
     @RequestMapping("/test")
-    public List<User> getUsers(Model model) {
+    @ResponseBody
+    public String getUsers(Model model) {
         List<User> list = new ArrayList<User>();
         for(int i=1;i<=userRepository.count();i++){
-//            System.out.println(i);
             Optional<User> op = userRepository.findById(i);
             list.add(op.get());
-//            System.out.println(op.get().getXuehao());
         }
-        return list;
+        return JSON.toJSONString(list);
+
     }
 
 }

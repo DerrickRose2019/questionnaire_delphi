@@ -8,189 +8,649 @@
     <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.css" rel="stylesheet">
+
+    <style>
+        #no1,#no2,#no3{
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
 
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#hide1").click(function(){
+            $("#no1").slideToggle("slow");
+        });
+    });
+
+    $(document).ready(function(){
+        $("#hide2").click(function(){
+            $("#no2").slideToggle("slow");
+        });
+    });
+
+    $(document).ready(function(){
+        $("#hide3").click(function(){
+            $("#no3").slideToggle("slow");
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        var lun=[];
+        $.ajax({
+            type : "post",
+            url : "/test",    //请求发送到dataActiont处
+            dataType : "json",        //返回数据形式为json
+            success : function(data) {
+                if (data) {
+                    for(var i=0;i<data.length;i++){
+                        lun.push(data[i].lun);
+                    }
+                    var max=0;
+                    for(var i=0;i<lun.length;i++){
+                        if(max<lun[i])
+                            max=lun[i];
+                    }
+                    // alert("max="+max);
+                    if(max===1){
+
+                    }else if(max===2){
+                        $("#no1").show();
+                    }else if(max===3){
+                        $("#no2").show();
+                    }else if(max==4){
+                        $("#no3").show();
+                    }
+                }
+            },
+            error : function(errorMsg) {
+                //请求失败时执行该函数
+                alert("Error!");
+            }
+        });//end ajax
+    });
+</script>
 <center>
+
     <br><br>
     <h2 style="color:green">背景调研和分析结果</h2>
     <br><br>
 
-
-    <a href="https://downdoc.wjx.cn/statdown/71022084/%E5%8C%97%E6%9E%97%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%96%AB%E6%83%85%E6%9C%9F%E9%97%B4%E6%B6%88%E8%B4%B9%E6%83%85%E5%86%B5%E8%B0%83%E6%9F%A5_71022084.docx?Expires=1587253665&OSSAccessKeyId=LTAIkYiHONyE2mHz&Signature=aHIC%2B8Pxpy%2FquU9l2854VepgWho%3D"><button type="button" class="btn btn-info">北林大学生疫情期间消费情况调查.docx</button></a>
-    <a href="https://downdoc.wjx.cn/statdown/70981233/%E5%8C%97%E6%9E%97%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%96%AB%E6%83%85%E5%89%8D%E6%B6%88%E8%B4%B9%E6%83%85%E5%86%B5%E8%B0%83%E6%9F%A5_70981233.docx?Expires=1587253699&OSSAccessKeyId=LTAIkYiHONyE2mHz&Signature=mgVf5YQH9GxuLDwVdfgnhGP9pxs%3D"><button type="button" class="btn btn-info">北林大学生疫情前消费情况调查.docx</button></a>
+    <h3 style="color:green">背景调研（供第一轮预测参考）</h3>
+    <br>
+    
+    <a href="https://docs.qq.com/doc/DUE1jZVRqUmtOZVZR"><button type="button" class="btn btn-info">北林大学生疫情期间消费情况调查.docx</button></a>
+    <a href="https://docs.qq.com/doc/DUG5XclNjeG9RQlVl"><button type="button" class="btn btn-info">北林大学生疫情前消费情况调查.docx</button></a>
     <br><br>
+    <h3 style="color:green">第一轮分析结果（供第二轮预测参考）</h3>
+    <br>
+    <div id="no1" style="width: 800px;height: 1050px;">
+        <div id="main1" style="width: 800px;height:450px;"></div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('main1'));
+                //数据加载完之前先显示一段简单的loading动画
+                myChart.showLoading();
+                var lun=[];
+                var xiaofei_min=[];    //纵坐标数组（实际用来盛放Y坐标值）
+                var xiaofei_zuishi=[];
+                var xiaofei_zuigao=[];
+                $.ajax({
+                    type : "post",
+                    // async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+                    url : "/test",    //请求发送到dataActiont处
+                    // data : {},
+                    dataType : "json",        //返回数据形式为json
+                    success : function(data) {
+                        //请求成功时执行该函数内容，result即为服务器返回的json对象
+                        console.log(data);
 
-<!--        <table class="table table-bordered table table-hover" style="width:800px">-->
-<!--            <tr style="color:red">-->
-<!--                <th>学号</th>-->
-<!--                <th>最低消费(元)</th>-->
-<!--                <th>最适消费(元)</th>-->
-<!--                <th>最高消费(元)</th>-->
-<!--                <th>City</th>-->
-<!--            </tr>-->
-<!--            <tr th:each="user : ${users}">-->
-<!--                <td th:text="${user.xuehao}"></td>-->
-<!--                <td th:text="${user.xiaofei_min}"></td>-->
-<!--                <td th:text="${user.xiaofei_zuishi}"></td>-->
-<!--                <td th:text="${user.xiaofei_zuigao}"></td>-->
-<!--                <td th:text="${user.xfzb_sp}"></td>-->
-<!--            </tr>-->
-<!--        </table>-->
+                        if (data) {
+                            for(var i=0;i<data.length;i++){
+                                lun.push(data[i].lun);
+                                xiaofei_min.push(data[i].xiaofei_min);
+                                xiaofei_zuishi.push(data[i].xiaofei_zuishi);
+                                xiaofei_zuigao.push(data[i].xiaofei_zuigao);
 
-
-<!--    <div id="main1" style="width: 800px;height:450px;"></div>-->
-
-<!--    <script type="text/javascript">-->
-<!--        // 基于准备好的dom，初始化echarts实例-->
-<!--        var sum1=0,sum2=0,sum3=0;-->
-
-
-<!--        var myChart = echarts.init(document.getElementById('main1'));-->
-
-<!--        // 指定图表的配置项和数据-->
-<!--        var option = {-->
-<!--            title: {-->
-<!--                text: '专家预测疫情后消费柱状图'-->
-<!--            },-->
-<!--            tooltip: {},-->
-<!--            legend: {-->
-<!--                data:['销量']-->
-<!--            },-->
-<!--            xAxis: {-->
-<!--                data: ["最低消费", "最适消费","最高消费"]-->
-<!--            },-->
-<!--            yAxis: {},-->
-<!--            series: [{-->
-<!--                name: '预估金额',-->
-<!--                type: 'bar',-->
-<!--                data: [10, 20, 36]-->
-<!--            }]-->
-<!--        };-->
-
-<!--        // 使用刚指定的配置项和数据显示图表。-->
-<!--        myChart.setOption(option);-->
-<!--    </script>-->
-
-<!--    <div id="main2" style="width: 800px;height:600px;"></div>-->
-<!--    <script type="text/javascript">-->
-<!--        // 基于准备好的dom，初始化echarts实例-->
-<!--        var myChart = echarts.init(document.getElementById('main2'));-->
-
-<!--        // 指定图表的配置项和数据-->
-<!--        var option = {-->
-<!--            title: {-->
-<!--                text: '专家预测疫情后消费分布图'-->
-<!--            },-->
-<!--            tooltip: {-->
-<!--                trigger: 'item',-->
-<!--                formatter: '{a} <br/>{b}: {c} ({d}%)'-->
-<!--            },-->
-<!--            legend: {-->
-<!--                orient: 'vertical',-->
-<!--                right: 20,-->
-<!--                data: ['食品餐饮', '日用品、卫生医药用品', '服饰与美容', '交通与通讯', '交往聚会',-->
-<!--                    '自我学习增值（文具书籍等）', '游戏娱乐']-->
-<!--            },-->
-<!--            series: [-->
-<!--                {-->
-<!--                    name: '消费种类',-->
-<!--                    type: 'pie',-->
-<!--                    radius: ['50%', '70%'],-->
-<!--                    avoidLabelOverlap: false,-->
-<!--                    label: {-->
-<!--                        show: false,-->
-<!--                        position: 'center'-->
-<!--                    },-->
-<!--                    emphasis: {-->
-<!--                        label: {-->
-<!--                            show: true,-->
-<!--                            fontSize: '30',-->
-<!--                            fontWeight: 'bold'-->
-<!--                        }-->
-<!--                    },-->
-<!--                    labelLine: {-->
-<!--                        show: false-->
-<!--                    },-->
-<!--                    data: [-->
-<!--                        {value: 15, name: '食品餐饮'},-->
-<!--                        {value: 109, name: '日用品、卫生医药用品'},-->
-<!--                        {value: 12.6, name: '服饰与美容'},-->
-<!--                        {value: 13, name: '交通与通讯'},-->
-<!--                        {value: 11, name: '交往聚会'},-->
-<!--                        {value: 16, name: '自我学习增值（文具书籍等）'},-->
-<!--                        {value: 4, name: '游戏娱乐'}-->
-<!--                    ]-->
-<!--                }-->
-<!--            ]-->
-<!--        };-->
-
-<!--        // 使用刚指定的配置项和数据显示图表。-->
-<!--        myChart.setOption(option);-->
-<!--    </script>-->
-    <div id="main" style="width: 800px;height:450px;"></div>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            // 基于准备好的dom，初始化echarts实例
-            var myChart = echarts.init(document.getElementById('main'));
-            //数据加载完之前先显示一段简单的loading动画
-            myChart.showLoading();
-            var xiaofei_min=[];    //纵坐标数组（实际用来盛放Y坐标值）
-            var xiaofei_zuishi=[];
-            var xiaofei_zuigao=[];
-            $.ajax({
-                type : "post",
-                async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-                url : "/test",    //请求发送到dataActiont处
-                data : {},
-                dataType : "text",        //返回数据形式为json
-                success : function(result) {
-                    //请求成功时执行该函数内容，result即为服务器返回的json对象
-                    if (result) {
-                        for(var i=0;i<result.length;i++){
-                            xiaofei_min.push(result[i].xiaofei_min);
-                            xiaofei_zuishi.push(result[i].xiaofei_zuishi);
-                            xiaofei_zuigao.push(result[i].xiaofei_zuigao);
-                        }
-                        myChart.hideLoading();    //隐藏加载动画
-                        myChart.setOption({
-                            //加载数据图表
-                            title:{
-                                text: '专家预测疫情后消费柱状图'
-                            },
-
-                            legend: {
-                                data:['指标类型']
-                            },
-                            xAxis: {
-                                data: ['最低消费（元）', '最适消费（元）', '最高消费（元）'],
-                                axisLabel:{
-                                    interval: 0
+                            }
+                            var sum1=0,sum2=0,sum3=0;
+                            var cnt=0;
+                            for(var i=0;i<xiaofei_min.length;i++){
+                                if(lun[i]===1){
+                                    cnt=cnt+1;
+                                    sum1=sum1+xiaofei_min[i];
+                                    sum2=sum2+xiaofei_zuishi[i];
+                                    sum3=sum3+xiaofei_zuigao[i];
                                 }
+                            }
+                            myChart.hideLoading();    //隐藏加载动画
+                            myChart.setOption({
+                                //加载数据图表
+                                title:{
+                                    text: '专家预测疫情后消费柱状图',
+                                    subtext: '（共'+cnt+'人参与）'
+                                },
+                                tooltip: {},
+                                legend: {
+                                    data:['销量']
+                                },
+                                xAxis: {
+                                    data: ['最低消费（元）', '最适消费（元）', '最高消费（元）'],
 
-                            },
-                            yAxis: {
-                                type: 'value'
-                            },
-                            series: [{
-                                // 根据名字对应到相应的系列
-                                name: '数量',
-                                type: 'bar',
-                                data: [100, 200, 300]
-                            }]
-                        });
+                                },
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: [{
+                                    // 根据名字对应到相应的系列
+                                    name: '数量',
+                                    type: 'bar',
+                                    showBackground: true,
+                                    data: [sum1/cnt, sum2/cnt, sum3/cnt]
+                                }]
+                            });
+                        }
+                    },
+                    error : function(errorMsg) {
+                        //请求失败时执行该函数
+                        alert("图表请求数据失败!");
+                        myChart.hideLoading();
                     }
-                },
-                error : function(errorMsg) {
-                    //请求失败时执行该函数
-                    alert("图表请求数据失败!");
-                    myChart.hideLoading();
-                }
-            });//end ajax
-        });
-    </script>
+                });//end ajax
+            });
+        </script>
 
+        <div id="main2" style="width: 800px;height:600px;"></div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('main2'));
+                //数据加载完之前先显示一段简单的loading动画
+                myChart.showLoading();
+                var lun=[];
+                var xfzb_fs=[];    //纵坐标数组（实际用来盛放Y坐标值）
+                var xfzb_jw=[];
+                var xfzb_ry=[];
+                var xfzb_sp=[];
+                var xfzb_tx=[];
+                var xfzb_yx=[];
+                var xfzb_zw=[];
+                $.ajax({
+                    type : "post",
+                    url : "/test",    //请求发送到dataActiont处
+                    dataType : "json",        //返回数据形式为json
+                    success : function(data) {
+                        //请求成功时执行该函数内容，result即为服务器返回的json对象
+                        console.log(data);
+                        if (data) {
+                            for(var i=0;i<data.length;i++){
+                                lun.push(data[i].lun);
+                                xfzb_fs.push(data[i].xfzb_fs);
+                                xfzb_jw.push(data[i].xfzb_jw);
+                                xfzb_ry.push(data[i].xfzb_ry);
+                                xfzb_sp.push(data[i].xfzb_sp);
+                                xfzb_tx.push(data[i].xfzb_tx);
+                                xfzb_yx.push(data[i].xfzb_yx);
+                                xfzb_zw.push(data[i].xfzb_zw);
+                            }
+                            var sum1=0,sum2=0,sum3=0,sum4=0,sum5=0,sum6=0,sum7=0;
+                            var cnt=0;
+                            for(var i=0;i<xfzb_fs.length;i++){
+                                if(lun[i]===1){
+                                    cnt=cnt+1;
+                                    sum1=sum1+xfzb_fs[i];
+                                    sum2=sum2+xfzb_jw[i];
+                                    sum3=sum3+xfzb_ry[i];
+                                    sum4=sum4+xfzb_sp[i];
+                                    sum5=sum5+xfzb_tx[i];
+                                    sum6=sum6+xfzb_yx[i];
+                                    sum7=sum7+xfzb_zw[i];
+                                }
+                            }
+
+                            myChart.hideLoading();    //隐藏加载动画
+                            myChart.setOption({
+                                title: {
+                                    text: '专家预测疫情后消费分布图',
+                                    subtext: '（共'+cnt+'人参与）'
+                                },
+                                tooltip: {
+                                    trigger: 'item',
+                                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                                },
+                                legend: {
+                                    orient: 'vertical',
+                                    right: 20,
+                                    data: ['食品餐饮', '日用品、卫生医药用品', '服饰与美容', '交通与通讯', '交往聚会',
+                                        '自我学习增值（文具书籍等）', '游戏娱乐']
+                                },
+                                series: [{
+                                    name: '消费种类',
+                                    type: 'pie',
+                                    radius: ['50%', '70%'],
+                                    avoidLabelOverlap: false,
+                                    label: {
+                                        show: false,
+                                        position: 'center'
+                                    },
+                                    emphasis: {
+                                        label: {
+                                            show: true,
+                                            fontSize: '30',
+                                            fontWeight: 'bold'
+                                        }
+                                    },
+                                    labelLine: {
+                                        show: false
+                                    },
+                                    data: [
+                                        {value: sum4, name: '食品餐饮'},
+                                        {value: sum3, name: '日用品、卫生医药用品'},
+                                        {value: sum1, name: '服饰与美容'},
+                                        {value: sum5, name: '交通与通讯'},
+                                        {value: sum2, name: '交往聚会'},
+                                        {value: sum7, name: '自我学习增值（文具书籍等）'},
+                                        {value: sum6, name: '游戏娱乐'}
+                                    ]
+                                }]
+                            });
+                        }
+                    },
+                    error : function(errorMsg) {
+                        //请求失败时执行该函数
+                        alert("图表请求数据失败!");
+                        myChart.hideLoading();
+                    }
+                });//end ajax
+            });
+        </script>
+    </div>
+
+
+    <button id="hide1" type="button" class="btn btn-primary">隐藏/显示</button>
+
+    <br><br>
+    <h3 style="color:green">第二轮分析结果（供第三轮预测参考）</h3>
+    <br>
+    <div id="no2" style="width: 800px;height: 1050px;">
+        <div id="main3" style="width: 800px;height:450px;"></div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('main3'));
+                //数据加载完之前先显示一段简单的loading动画
+                myChart.showLoading();
+                var lun=[];
+                var xiaofei_min=[];    //纵坐标数组（实际用来盛放Y坐标值）
+                var xiaofei_zuishi=[];
+                var xiaofei_zuigao=[];
+                $.ajax({
+                    type : "post",
+                    // async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+                    url : "/test",    //请求发送到dataActiont处
+                    // data : {},
+                    dataType : "json",        //返回数据形式为json
+                    success : function(data) {
+                        //请求成功时执行该函数内容，result即为服务器返回的json对象
+                        console.log(data);
+
+                        if (data) {
+                            for(var i=0;i<data.length;i++){
+                                lun.push(data[i].lun);
+                                xiaofei_min.push(data[i].xiaofei_min);
+                                xiaofei_zuishi.push(data[i].xiaofei_zuishi);
+                                xiaofei_zuigao.push(data[i].xiaofei_zuigao);
+
+                            }
+                            var sum1=0,sum2=0,sum3=0;
+                            var cnt=0;
+                            for(var i=0;i<xiaofei_min.length;i++){
+                                if(lun[i]===2){
+                                    cnt=cnt+1;
+                                    sum1=sum1+xiaofei_min[i];
+                                    sum2=sum2+xiaofei_zuishi[i];
+                                    sum3=sum3+xiaofei_zuigao[i];
+                                }
+                            }
+                            myChart.hideLoading();    //隐藏加载动画
+                            myChart.setOption({
+                                //加载数据图表
+                                title:{
+                                    text: '专家预测疫情后消费柱状图',
+                                    subtext: '（共'+cnt+'人参与）'
+                                },
+                                tooltip: {},
+                                legend: {
+                                    data:['销量']
+                                },
+                                xAxis: {
+                                    data: ['最低消费（元）', '最适消费（元）', '最高消费（元）'],
+
+                                },
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: [{
+                                    // 根据名字对应到相应的系列
+                                    name: '数量',
+                                    type: 'bar',
+                                    showBackground: true,
+                                    data: [sum1/cnt, sum2/cnt, sum3/cnt]
+                                }]
+                            });
+                        }
+                    },
+                    error : function(errorMsg) {
+                        //请求失败时执行该函数
+                        alert("图表请求数据失败!");
+                        myChart.hideLoading();
+                    }
+                });//end ajax
+            });
+        </script>
+
+        <div id="main4" style="width: 800px;height:600px;"></div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('main4'));
+                //数据加载完之前先显示一段简单的loading动画
+                myChart.showLoading();
+                var lun=[];
+                var xfzb_fs=[];    //纵坐标数组（实际用来盛放Y坐标值）
+                var xfzb_jw=[];
+                var xfzb_ry=[];
+                var xfzb_sp=[];
+                var xfzb_tx=[];
+                var xfzb_yx=[];
+                var xfzb_zw=[];
+                $.ajax({
+                    type : "post",
+                    url : "/test",    //请求发送到dataActiont处
+                    dataType : "json",        //返回数据形式为json
+                    success : function(data) {
+                        //请求成功时执行该函数内容，result即为服务器返回的json对象
+                        console.log(data);
+                        if (data) {
+                            for(var i=0;i<data.length;i++){
+                                lun.push(data[i].lun);
+                                xfzb_fs.push(data[i].xfzb_fs);
+                                xfzb_jw.push(data[i].xfzb_jw);
+                                xfzb_ry.push(data[i].xfzb_ry);
+                                xfzb_sp.push(data[i].xfzb_sp);
+                                xfzb_tx.push(data[i].xfzb_tx);
+                                xfzb_yx.push(data[i].xfzb_yx);
+                                xfzb_zw.push(data[i].xfzb_zw);
+                            }
+                            var sum1=0,sum2=0,sum3=0,sum4=0,sum5=0,sum6=0,sum7=0;
+                            var cnt=0;
+                            for(var i=0;i<xfzb_fs.length;i++){
+                                if(lun[i]===2){
+                                    cnt=cnt+1;
+                                    sum1=sum1+xfzb_fs[i];
+                                    sum2=sum2+xfzb_jw[i];
+                                    sum3=sum3+xfzb_ry[i];
+                                    sum4=sum4+xfzb_sp[i];
+                                    sum5=sum5+xfzb_tx[i];
+                                    sum6=sum6+xfzb_yx[i];
+                                    sum7=sum7+xfzb_zw[i];
+                                }
+                            }
+
+                            myChart.hideLoading();    //隐藏加载动画
+                            myChart.setOption({
+                                title: {
+                                    text: '专家预测疫情后消费分布图',
+                                    subtext: '（共'+cnt+'人参与）'
+                                },
+                                tooltip: {
+                                    trigger: 'item',
+                                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                                },
+                                legend: {
+                                    orient: 'vertical',
+                                    right: 20,
+                                    data: ['食品餐饮', '日用品、卫生医药用品', '服饰与美容', '交通与通讯', '交往聚会',
+                                        '自我学习增值（文具书籍等）', '游戏娱乐']
+                                },
+                                series: [{
+                                    name: '消费种类',
+                                    type: 'pie',
+                                    radius: ['50%', '70%'],
+                                    avoidLabelOverlap: false,
+                                    label: {
+                                        show: false,
+                                        position: 'center'
+                                    },
+                                    emphasis: {
+                                        label: {
+                                            show: true,
+                                            fontSize: '30',
+                                            fontWeight: 'bold'
+                                        }
+                                    },
+                                    labelLine: {
+                                        show: false
+                                    },
+                                    data: [
+                                        {value: sum4, name: '食品餐饮'},
+                                        {value: sum3, name: '日用品、卫生医药用品'},
+                                        {value: sum1, name: '服饰与美容'},
+                                        {value: sum5, name: '交通与通讯'},
+                                        {value: sum2, name: '交往聚会'},
+                                        {value: sum7, name: '自我学习增值（文具书籍等）'},
+                                        {value: sum6, name: '游戏娱乐'}
+                                    ]
+                                }]
+                            });
+                        }
+                    },
+                    error : function(errorMsg) {
+                        //请求失败时执行该函数
+                        alert("图表请求数据失败!");
+                        myChart.hideLoading();
+                    }
+                });//end ajax
+            });
+        </script>
+    </div>
+    <button id="hide2" type="button" class="btn btn-primary">隐藏/显示</button>
+
+    <br><br>
+    <h3 style="color:green">第三轮分析结果（供第四轮预测参考）</h3>
+    <br>
+    <div id="no3" style="width: 800px;height: 1050px;">
+        <div id="main5" style="width: 800px;height:450px;"></div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('main5'));
+                //数据加载完之前先显示一段简单的loading动画
+                myChart.showLoading();
+                var lun=[];
+                var xiaofei_min=[];    //纵坐标数组（实际用来盛放Y坐标值）
+                var xiaofei_zuishi=[];
+                var xiaofei_zuigao=[];
+                $.ajax({
+                    type : "post",
+                    // async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+                    url : "/test",    //请求发送到dataActiont处
+                    // data : {},
+                    dataType : "json",        //返回数据形式为json
+                    success : function(data) {
+                        //请求成功时执行该函数内容，result即为服务器返回的json对象
+                        console.log(data);
+
+                        if (data) {
+                            for(var i=0;i<data.length;i++){
+                                lun.push(data[i].lun);
+                                xiaofei_min.push(data[i].xiaofei_min);
+                                xiaofei_zuishi.push(data[i].xiaofei_zuishi);
+                                xiaofei_zuigao.push(data[i].xiaofei_zuigao);
+
+                            }
+                            var sum1=0,sum2=0,sum3=0;
+                            var cnt=0;
+                            for(var i=0;i<xiaofei_min.length;i++){
+                                if(lun[i]===3){
+                                    cnt=cnt+1;
+                                    sum1=sum1+xiaofei_min[i];
+                                    sum2=sum2+xiaofei_zuishi[i];
+                                    sum3=sum3+xiaofei_zuigao[i];
+                                }
+                            }
+                            myChart.hideLoading();    //隐藏加载动画
+                            myChart.setOption({
+                                //加载数据图表
+                                title:{
+                                    text: '专家预测疫情后消费柱状图',
+                                    subtext: '（共'+cnt+'人参与）'
+                                },
+                                tooltip: {},
+                                legend: {
+                                    data:['销量']
+                                },
+                                xAxis: {
+                                    data: ['最低消费（元）', '最适消费（元）', '最高消费（元）'],
+
+                                },
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: [{
+                                    // 根据名字对应到相应的系列
+                                    name: '数量',
+                                    type: 'bar',
+                                    showBackground: true,
+                                    data: [sum1/cnt, sum2/cnt, sum3/cnt]
+                                }]
+                            });
+                        }
+                    },
+                    error : function(errorMsg) {
+                        //请求失败时执行该函数
+                        alert("图表请求数据失败!");
+                        myChart.hideLoading();
+                    }
+                });//end ajax
+            });
+        </script>
+
+        <div id="main6" style="width: 800px;height:600px;"></div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('main6'));
+                //数据加载完之前先显示一段简单的loading动画
+                myChart.showLoading();
+                var lun=[];
+                var xfzb_fs=[];    //纵坐标数组（实际用来盛放Y坐标值）
+                var xfzb_jw=[];
+                var xfzb_ry=[];
+                var xfzb_sp=[];
+                var xfzb_tx=[];
+                var xfzb_yx=[];
+                var xfzb_zw=[];
+                $.ajax({
+                    type : "post",
+                    url : "/test",    //请求发送到dataActiont处
+                    dataType : "json",        //返回数据形式为json
+                    success : function(data) {
+                        //请求成功时执行该函数内容，result即为服务器返回的json对象
+                        console.log(data);
+                        if (data) {
+                            for(var i=0;i<data.length;i++){
+                                lun.push(data[i].lun);
+                                xfzb_fs.push(data[i].xfzb_fs);
+                                xfzb_jw.push(data[i].xfzb_jw);
+                                xfzb_ry.push(data[i].xfzb_ry);
+                                xfzb_sp.push(data[i].xfzb_sp);
+                                xfzb_tx.push(data[i].xfzb_tx);
+                                xfzb_yx.push(data[i].xfzb_yx);
+                                xfzb_zw.push(data[i].xfzb_zw);
+                            }
+                            var sum1=0,sum2=0,sum3=0,sum4=0,sum5=0,sum6=0,sum7=0;
+                            var cnt=0;
+                            for(var i=0;i<xfzb_fs.length;i++){
+                                if(lun[i]===3){
+                                    cnt=cnt+1;
+                                    sum1=sum1+xfzb_fs[i];
+                                    sum2=sum2+xfzb_jw[i];
+                                    sum3=sum3+xfzb_ry[i];
+                                    sum4=sum4+xfzb_sp[i];
+                                    sum5=sum5+xfzb_tx[i];
+                                    sum6=sum6+xfzb_yx[i];
+                                    sum7=sum7+xfzb_zw[i];
+                                }
+                            }
+
+                            myChart.hideLoading();    //隐藏加载动画
+                            myChart.setOption({
+                                title: {
+                                    text: '专家预测疫情后消费分布图',
+                                    subtext: '（共'+cnt+'人参与）'
+                                },
+                                tooltip: {
+                                    trigger: 'item',
+                                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                                },
+                                legend: {
+                                    orient: 'vertical',
+                                    right: 20,
+                                    data: ['食品餐饮', '日用品、卫生医药用品', '服饰与美容', '交通与通讯', '交往聚会',
+                                        '自我学习增值（文具书籍等）', '游戏娱乐']
+                                },
+                                series: [{
+                                    name: '消费种类',
+                                    type: 'pie',
+                                    radius: ['50%', '70%'],
+                                    avoidLabelOverlap: false,
+                                    label: {
+                                        show: false,
+                                        position: 'center'
+                                    },
+                                    emphasis: {
+                                        label: {
+                                            show: true,
+                                            fontSize: '30',
+                                            fontWeight: 'bold'
+                                        }
+                                    },
+                                    labelLine: {
+                                        show: false
+                                    },
+                                    data: [
+                                        {value: sum4, name: '食品餐饮'},
+                                        {value: sum3, name: '日用品、卫生医药用品'},
+                                        {value: sum1, name: '服饰与美容'},
+                                        {value: sum5, name: '交通与通讯'},
+                                        {value: sum2, name: '交往聚会'},
+                                        {value: sum7, name: '自我学习增值（文具书籍等）'},
+                                        {value: sum6, name: '游戏娱乐'}
+                                    ]
+                                }]
+                            });
+                        }
+                    },
+                    error : function(errorMsg) {
+                        //请求失败时执行该函数
+                        alert("图表请求数据失败!");
+                        myChart.hideLoading();
+                    }
+                });//end ajax
+            });
+        </script>
+    </div>
+
+
+    <button id="hide3" type="button" class="btn btn-primary">隐藏/显示</button>
+    <br><br><br>
     <p>
         <a href="/greeting"><button type="button" class="btn btn-primary">返回首页</button></a>
     </p>
